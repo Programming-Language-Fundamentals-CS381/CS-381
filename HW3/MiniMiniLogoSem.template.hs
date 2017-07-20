@@ -50,22 +50,12 @@ draw p = let (_,ls) = prog p start in toHTML ls
 --   ((Down,(4,5)),Just ((2,3),(4,5)))
 --
 
--- | The mode of the pen.
-data Mode = Down | Up
-  deriving (Eq,Show)
-
--- | Abstract syntax of commands.
-data Cmd = Pen Mode
-         | Move Int Int
-  deriving (Eq,Show)
-
---
+-- Done
 cmd :: Cmd -> State -> (State, Maybe Line)
-cmd --Pen Down
-cmd --Pen Up
-cmd --Move
-cmd --Move
-
+cmd (Pen s) (m, p) = ((s, p), Nothing)
+cmd (Move x1 y1) (s, (x2, y2)) = case s of
+  Down -> ((s,(x1, y1)),Just ((x2,y2),(x1,y1)))
+  Up -> ((s,(x1, y1)),Nothing)
 
 -- | Semantic function for Prog.
 --
@@ -76,10 +66,30 @@ cmd --Move
 --   ((Down,(2,2)),[((0,0),(0,1)),((0,1),(1,1)),((1,1),(1,2)),((1,2),(2,2))])
 --
 
+type Prog = [Cmd]
+
+-- | The mode of the pen.
+data Mode = Down | Up
+  deriving (Eq,Show)
+
+-- | Abstract syntax of commands.
+data Cmd = Pen Mode
+         | Move Int Int
+  deriving (Eq,Show)
+
+  -- | A type to represent the current state of the pen.
+  type State = (Mode,Point)
+
+  -- | A point is a cartesian pair (x,y).
+  Point = (Int,Int)
+
+  -- | A line is defined by its endpoints.
+  Line = (Point,Point)
+
+
 --
 prog :: Prog -> State -> (State, [Line])
-prog = undefined
-
+prog p (s, (x,y)) = ((s,(x,y)), pro p)
 
 --
 -- * Extra credit

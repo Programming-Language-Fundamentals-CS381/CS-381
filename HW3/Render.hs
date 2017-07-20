@@ -69,4 +69,3 @@ poly :: [Point] -> String
 poly ps = "<polyline points='"
        ++ intercalate " " (map point ps)
        ++ "' style='" ++ style ++ "'/>"
-
